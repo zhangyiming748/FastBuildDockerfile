@@ -2,9 +2,11 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    tags:
+      - "tar*"
+#    branches: [ "master" ]
+#  pull_request:
+#    branches: [ "master" ]
 
 jobs:
   build:
@@ -20,6 +22,8 @@ jobs:
       run: docker pull kasmweb/remnux-focal-desktop:1.14.0
     - name: saveSpace
       run: rm -rf /opt/hostedtoolcache
+    - name: checkpath
+      run: ls -ahl
     - name: export
       run: docker save kasmweb/remnux-focal-desktop:1.14.0 -o remnux-focal-desktop-for-arm64.tar
     - name: checkpath
