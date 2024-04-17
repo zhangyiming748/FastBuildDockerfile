@@ -1,0 +1,32 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [linux/arm64]
+        os: [ ubuntu-latest ]
+        arch: [ arm64 ]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: docker pull kasmweb/remnux-focal-desktop:1.14.0
+    - name: saveSpace
+      run: rm -rf /opt/hostedtoolcache
+    - name: export
+      run: docker save kasmweb/remnux-focal-desktop:1.14.0 | xz --threads=0 -9e --memlimit-compress=0 > remnux-focal-desktop-for-arm64.tar.xz
+    - name: checkpath
+      run: ls -al
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: remnux-focal-desktop
+        path: ${{ github.workspace }}/remnux-focal-desktop-for-arm64.tar.xz
+        compression-level: 9 # max compression

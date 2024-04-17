@@ -12,19 +12,21 @@ jobs:
     strategy:
       matrix:
         platform: [linux/arm64]
+        os: [ ubuntu-latest ]
+        arch: [ arm64 ]
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
       run: docker pull kasmweb/remnux-focal-desktop:1.14.0
-    - name: checkpath
-      run: ls -al
     - name: saveSpace
       run: rm -rf /opt/hostedtoolcache
     - name: export
-      run: docker save kasmweb/remnux-focal-desktop:1.14.0 | xz --threads=0 -9e --memlimit-compress=0 > remnux-focal-desktop-dor-arm64.tar.xz
+      run: docker save kasmweb/remnux-focal-desktop:1.14.0 -o remnux-focal-desktop-for-arm64.tar
+    - name: checkpath
+      run: ls -al
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
         name: remnux-focal-desktop
-        path: ${{ github.workspace }}/remnux-focal-desktop-dor-arm64.tar.xz
+        path: ${{ github.workspace }}/remnux-focal-desktop-for-arm64.tar
         compression-level: 9 # max compression
