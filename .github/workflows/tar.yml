@@ -23,11 +23,13 @@ jobs:
     - name: saveSpace
       run: rm -rf /opt/hostedtoolcache
     - name: checkpath
-      run: ls -ahl
+      run: ls -ahl && dh -a
+    - name: clean
+      run: sudo rm -rf /usr/share/dotnet && sudo rm -rf /opt/ghc && sudo rm -rf "/usr/local/share/boost" && sudo rm -rf "$AGENT_TOOLSDIRECTORY"
     - name: export
       run: docker save kasmweb/remnux-focal-desktop:1.14.0 -o remnux-focal-desktop-for-arm64.tar
     - name: checkpath
-      run: ls -ahl
+      run: ls -ahl && dh -a
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
