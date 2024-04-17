@@ -23,7 +23,7 @@ jobs:
     - name: export
       run: docker save kasmweb/remnux-focal-desktop:1.14.0 | xz --threads=0 -9e --memlimit-compress=0 > remnux-focal-desktop-for-arm64.tar.xz
     - name: checkpath
-      run: ls -al
+      run: ls -alh
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
