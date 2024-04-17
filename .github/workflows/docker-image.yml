@@ -7,9 +7,7 @@ on:
     branches: [ "master" ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -19,5 +17,14 @@ jobs:
     - name: Build the Docker image
       run: docker pull kasmweb/remnux-focal-desktop:1.14.0
     - name: checkpath
-      run: pwd
-      
+      run: ls -al
+    - name: saveSpace
+      run: rm -rf /opt/hostedtoolcache
+    - name: export
+      run: docker save kasmweb/remnux-focal-desktop:1.14.0 | xz --threads=0 -9e --memlimit-compress=0 > remnux-focal-desktop-dor-arm64.tar.xz
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: remnux-focal-desktop
+        path: ${{ github.workspace }}/remnux-focal-desktop-dor-arm64.tar.xz
+        compression-level: 9 # max compression
