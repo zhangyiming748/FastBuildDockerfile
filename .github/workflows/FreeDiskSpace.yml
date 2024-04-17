@@ -8,7 +8,7 @@ jobs:
       - name: pwd
         run: pwd
       - name: ls
-        run: ls -ahl
+        run: ls -ahl ${{ github.workspace }}
       - name: before
         run: sudo chmod a+rwx ${{ github.workspace }}/free.sh && ${{ github.workspace }}/free.sh before.txt
       - name: Free Disk Space (Ubuntu)
