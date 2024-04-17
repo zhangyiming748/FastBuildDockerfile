@@ -5,6 +5,8 @@ jobs:
   free-disk-space:
     runs-on: ubuntu-latest
     steps:
+      - name: pwd
+        run: pwd
       - name: before
         run: sudo chmod a+rwx ${{ github.workspace }}/free.sh && ${{ github.workspace }}/free.sh before.txt
       - name: Free Disk Space (Ubuntu)
