@@ -7,7 +7,7 @@ RUN go env -w GOBIN=/root/go/bin
 COPY debian.sources /etc/apt/sources.list.d/
 RUN apt update
 COPY install-retry.sh /usr/local/bin
-RUN chmog +x /usr/local/bin/install-retry.sh
+RUN chmod +x /usr/local/bin/install-retry.sh
 RUN install-retry.sh ffmpeg python3 python3-pip nano translate-shell libsqlite3-dev
 # RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 RUN pip install openai-whisper --break-system-packages
