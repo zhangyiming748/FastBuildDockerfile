@@ -1,36 +1,45 @@
-name: Docker Image To xz
+# .github/workflows/release.yml
+name: xz_releaser
 
 on:
+  pull_request:
   push:
+    # run only against tags
     tags:
       - "xz*"
-#    branches: [ "master" ]
-#  pull_request:
-#    branches: [ "master" ]
+    # branches: [ "master" ]
+
+permissions:
+  contents: write
+  # packages: write
+  # issues: write
 
 jobs:
-  build:
+  dockerbuilder:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        platform: [linux/arm64]
-        os: [ ubuntu-latest ]
-        arch: [ arm64 ]
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker pull kasmweb/remnux-focal-desktop:1.14.0
-    - name: saveSpace
-      run: rm -rf /opt/hostedtoolcache
-    - name: checkpath
-      run: ls -alh
-    - name: export
-      run: docker save kasmweb/remnux-focal-desktop:1.14.0 | xz --threads=0 -9e --memlimit-compress=0 > remnux-focal-desktop-for-arm64.tar.xz
-    - name: checkpath
-      run: ls -alh
-    - name: Upload
-      uses: actions/upload-artifact@v4
-      with:
-        name: remnux-focal-desktop
-        path: ${{ github.workspace }}/remnux-focal-desktop-for-arm64.tar.xz
-        compression-level: 9 # max compression
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+#      - name: go
+#        run: go build -o conv main.go
+      - name: build
+        run: docker build -t stand:latest ${{ github.workspace }}
+      - name: saveSpace
+        run: rm -rf /opt/hostedtoolcache
+      - name: export
+        run: docker save stand:latest | xz --threads=0 -9e --memlimit-compress=0 > stand.tar.xz
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: images
+          path: ${{ github.workspace }}/stand.tar.xz
+          compression-level: 9 # max compression
+      - name: release
+        run: |
+          time_var=$(date +"%Y%m%d-%H%M%S")
+          gh release create $time_var --generate-notes
+          gh release upload $time_var ${{ github.workspace }}/stand.tar.xz
+        env:
+          GH_TOKEN: ${{ github.token }}
